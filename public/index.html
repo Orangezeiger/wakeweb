@@ -502,15 +502,28 @@
     pollStatus();
   }
 
-  async function pollStatus() {
-    const statuses = await api('GET', '/api/status');
-    const labels = { online: 'Online', offline: 'Offline', unknown: 'Kein IP konfiguriert' };
-    Object.entries(statuses).forEach(([id, status]) => {
-      document.querySelectorAll(`[data-status-id="${id}"]`).forEach(dot => {
-        dot.className = `status-dot ${status}`;
-        dot.title = labels[status] ?? status;
-      });
+  const STATUS_LABELS = { online: 'Online', offline: 'Offline', unknown: 'Kein IP konfiguriert' };
+
+  function applyStatus(id, status) {
+    document.querySelectorAll(`[data-status-id="${id}"]`).forEach(dot => {
+      dot.className = `status-dot ${status}`;
+      dot.title = STATUS_LABELS[status] ?? status;
     });
+  }
+
+  async function pollStatus() {
+    let statuses;
+    try {
+      statuses = await api('GET', '/api/status');
+    } catch {
+      document.querySelectorAll('.status-dot').forEach(dot => {
+        dot.className = 'status-dot unknown';
+        dot.title = 'Nicht erreichbar';
+      });
+      return;
+    }
+    if (!statuses || typeof statuses !== 'object' || Array.isArray(statuses)) return;
+    Object.entries(statuses).forEach(([id, status]) => applyStatus(id, status));
   }
 
   setInterval(pollStatus, 5000);
