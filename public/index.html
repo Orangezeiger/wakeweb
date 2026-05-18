@@ -393,8 +393,8 @@
           <div class="device-mac">${escHtml(d.mac)}</div>
         </div>
         <div class="device-actions">
-          <button class="btn btn-wake" data-id="${d.id}">Aufwecken</button>
-          <button class="btn btn-delete" data-id="${d.id}">Löschen</button>
+          <button class="btn btn-wake" data-id="${d.id}"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="pointer-events:none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> Aufwecken</button>
+          <button class="btn btn-delete" data-id="${d.id}"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg> Löschen</button>
         </div>`;
       list.appendChild(item);
     });
@@ -421,18 +421,19 @@
   });
 
   list.addEventListener('click', async e => {
-    const id = e.target.dataset.id;
-    if (!id) return;
+    const btn = e.target.closest('button[data-id]');
+    if (!btn) return;
+    const id = btn.dataset.id;
 
-    if (e.target.classList.contains('btn-wake')) {
-      e.target.disabled = true;
+    if (btn.classList.contains('btn-wake')) {
+      btn.disabled = true;
       const res = await api('POST', `/api/devices/${id}/wake`);
-      e.target.disabled = false;
+      btn.disabled = false;
       if (res.error) { toast(res.error, 'error'); return; }
       toast(res.message);
     }
 
-    if (e.target.classList.contains('btn-delete')) {
+    if (btn.classList.contains('btn-delete')) {
       if (!confirm('Gerät wirklich löschen?')) return;
       const res = await api('DELETE', `/api/devices/${id}`);
       if (res.error) { toast(res.error, 'error'); return; }
