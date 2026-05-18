@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>wakeweb – Einrichtungsanleitung</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3249;
+      --accent: #5b8af5;
+      --accent-hover: #7aa3ff;
+      --text: #e8eaf6;
+      --muted: #8890b5;
+      --radius: 10px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #5b8af5, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      color: var(--muted);
+      margin-top: 0.4rem;
+      font-size: 0.95rem;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      margin-top: 0.6rem;
+      transition: color 0.18s;
+    }
+
+    .back-link:hover { color: var(--accent); }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1.2rem;
+    }
+
+    .guide-step {
+      display: flex;
+      gap: 1rem;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .guide-step:last-child { border-bottom: none; }
+
+    .step-num {
+      background: var(--accent);
+      color: #fff;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .step-content h3 {
+      font-size: 0.93rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .step-content p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    code {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.85em;
+      color: #a78bfa;
+    }
+
+    pre {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 0.8rem 1rem;
+      font-size: 0.82rem;
+      color: #a78bfa;
+      font-family: monospace;
+      overflow-x: auto;
+      max-width: 100%;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-top: 0.5rem;
+      line-height: 1.6;
+    }
+
+    .guide-section + .guide-section {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .guide-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .guide-section-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .os-select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.45rem 0.75rem;
+      border-radius: 7px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .os-select:focus { border-color: var(--accent); }
+
+    @media (max-width: 600px) {
+      body { padding: 1rem 0.75rem 3rem; }
+      header h1 { font-size: 1.5rem; }
+      .container { gap: 1.25rem; }
+      .card { padding: 1.1rem; }
+
+      pre { font-size: 0.75rem; }
+
+      .guide-section-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .guide-section-head .os-select { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>wakeweb</h1>
+  <p>Einrichtungsanleitung</p>
+  <a href="/" class="back-link">← Zurück zur Übersicht</a>
+</header>
+
+<div class="container">
+  <div class="card">
+
+    <div class="guide-section">
+      <div class="guide-section-head">
+        <div class="guide-section-label">Server (wakeweb läuft hier)</div>
+        <select id="server-select" class="os-select">
+          <option value="debian">Debian / Ubuntu</option>
+          <option value="arch">Arch / Manjaro</option>
+          <option value="windows">Windows</option>
+          <option value="macos">macOS</option>
+          <option value="proxmox">Proxmox VE</option>
+        </select>
+      </div>
+      <div id="server-guide"></div>
+    </div>
+
+    <div class="guide-section">
+      <div class="guide-section-head">
+        <div class="guide-section-label">Zielgerät (wird aufgeweckt)</div>
+        <select id="device-select" class="os-select">
+          <option value="windows">Windows</option>
+          <option value="linux">Linux</option>
+          <option value="macos">macOS</option>
+          <option value="proxmox-host">Proxmox Host</option>
+        </select>
+      </div>
+      <div id="device-guide"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function escHtml(str) {
+    return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  const SVC = `[Unit]
+Description=wakeweb Wake-on-LAN
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/wakeweb
+ExecStart=/usr/bin/node server.js
+Restart=always
+User=nobody
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target`;
+
+  const PLIST = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.user.wakeweb</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/node</string>
+    <string>/opt/wakeweb/server.js</string>
+  </array>
+  <key>WorkingDirectory</key><string>/opt/wakeweb</string>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+</dict>
+</plist>`;
+
+  const serverGuides = {
+    debian: [
+      { title: 'System aktualisieren & Pakete installieren',
+        blocks: [
+          { t: 'p', c: 'Git und curl werden für die Installation benötigt:' },
+          { t: 'c', c: 'sudo apt update && sudo apt upgrade -y\nsudo apt install -y git curl' },
+        ]},
+      { title: 'Node.js 20 LTS installieren',
+        blocks: [
+          { t: 'p', c: 'Offizielles NodeSource-Repository einbinden und Node.js installieren:' },
+          { t: 'c', c: 'curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -\nsudo apt install -y nodejs\nnode -v && npm -v' },
+        ]},
+      { title: 'Projekt klonen & Abhängigkeiten installieren',
+        blocks: [
+          { t: 'c', c: 'git clone https://github.com/dein-user/wakeweb /opt/wakeweb\ncd /opt/wakeweb\nnpm install' },
+        ]},
+      { title: 'Konfiguration',
+        blocks: [
+          { t: 'p', c: 'Umgebungsvariablen anlegen und Port prüfen (Standard: 3000):' },
+          { t: 'c', c: 'cp .env.example .env\nnano .env\n# PORT=3000' },
+        ]},
+      { title: 'Testlauf',
+        blocks: [
+          { t: 'c', c: 'cd /opt/wakeweb && npm start' },
+          { t: 'p', c: 'Im Browser <code>http://SERVER-IP:3000</code> öffnen. Mit <code>Strg+C</code> beenden.' },
+        ]},
+      { title: 'Als systemd-Dienst dauerhaft einrichten',
+        blocks: [
+          { t: 'p', c: 'Service-Datei anlegen:' },
+          { t: 'c', c: 'sudo nano /etc/systemd/system/wakeweb.service' },
+          { t: 'p', c: 'Inhalt einfügen:' },
+          { t: 'c', c: SVC },
+          { t: 'p', c: 'Dienst aktivieren und beim Boot automatisch starten:' },
+          { t: 'c', c: 'sudo systemctl daemon-reload\nsudo systemctl enable --now wakeweb\nsudo systemctl status wakeweb' },
+        ]},
+    ],
+
+    arch: [
+      { title: 'Pakete installieren',
+        blocks: [
+          { t: 'p', c: 'Git und Node.js über den offiziellen Paketmanager installieren:' },
+          { t: 'c', c: 'sudo pacman -Syu\nsudo pacman -S git nodejs npm' },
+        ]},
+      { title: 'Projekt klonen & Abhängigkeiten installieren',
+        blocks: [
+          { t: 'c', c: 'git clone https://github.com/dein-user/wakeweb /opt/wakeweb\ncd /opt/wakeweb\nnpm install' },
+        ]},
+      { title: 'Konfiguration',
+        blocks: [
+          { t: 'c', c: 'cp .env.example .env\nnano .env\n# PORT=3000' },
+        ]},
+      { title: 'Testlauf',
+        blocks: [
+          { t: 'c', c: 'npm start' },
+          { t: 'p', c: 'Im Browser <code>http://SERVER-IP:3000</code> öffnen. Mit <code>Strg+C</code> beenden.' },
+        ]},
+      { title: 'Als systemd-Dienst dauerhaft einrichten',
+        blocks: [
+          { t: 'c', c: 'sudo nano /etc/systemd/system/wakeweb.service' },
+          { t: 'p', c: 'Inhalt einfügen:' },
+          { t: 'c', c: SVC },
+          { t: 'c', c: 'sudo systemctl daemon-reload\nsudo systemctl enable --now wakeweb\nsudo systemctl status wakeweb' },
+        ]},
+    ],
+
+    windows: [
+      { title: 'Node.js installieren',
+        blocks: [
+          { t: 'p', c: 'Node.js LTS (v20) von <code>nodejs.org</code> herunterladen und den Installer ausführen. Die Option <strong>"Add to PATH"</strong> muss aktiviert sein.' },
+          { t: 'p', c: 'Installation in PowerShell prüfen:' },
+          { t: 'c', c: 'node -v\nnpm -v' },
+        ]},
+      { title: 'Git for Windows installieren',
+        blocks: [
+          { t: 'p', c: 'Git von <code>git-scm.com</code> herunterladen und installieren. Die Standardeinstellungen im Installer können übernommen werden.' },
+        ]},
+      { title: 'Projekt klonen & Abhängigkeiten installieren',
+        blocks: [
+          { t: 'p', c: 'PowerShell oder Git Bash öffnen:' },
+          { t: 'c', c: 'git clone https://github.com/dein-user/wakeweb C:\\wakeweb\ncd C:\\wakeweb\nnpm install' },
+        ]},
+      { title: 'Konfiguration',
+        blocks: [
+          { t: 'c', c: 'copy .env.example .env\nnotepad .env' },
+          { t: 'p', c: '<code>PORT=3000</code> nach Bedarf anpassen, dann speichern.' },
+        ]},
+      { title: 'Starten',
+        blocks: [
+          { t: 'c', c: 'npm start' },
+          { t: 'p', c: 'Im Browser <code>http://localhost:3000</code> öffnen. Mit <code>Strg+C</code> beenden.' },
+        ]},
+      { title: 'Autostart via Aufgabenplanung',
+        blocks: [
+          { t: 'p', c: 'Startskript anlegen – <code>C:\\wakeweb\\start.bat</code> mit folgendem Inhalt erstellen:' },
+          { t: 'c', c: '@echo off\ncd C:\\wakeweb\nnode server.js' },
+          { t: 'p', c: 'Aufgabe in einer <strong>Administrator-PowerShell</strong> registrieren:' },
+          { t: 'c', c: 'schtasks /create /tn "wakeweb" /tr "C:\\wakeweb\\start.bat" /sc onstart /ru SYSTEM /f' },
+        ]},
+    ],
+
+    macos: [
+      { title: 'Homebrew installieren',
+        blocks: [
+          { t: 'p', c: 'Homebrew ist der empfohlene Paketmanager für macOS:' },
+          { t: 'c', c: '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"' },
+        ]},
+      { title: 'Node.js installieren',
+        blocks: [
+          { t: 'c', c: 'brew install node\nnode -v && npm -v' },
+          { t: 'p', c: 'Alternativ den Installer von <code>nodejs.org</code> verwenden.' },
+        ]},
+      { title: 'Projekt klonen & Abhängigkeiten installieren',
+        blocks: [
+          { t: 'c', c: 'git clone https://github.com/dein-user/wakeweb /opt/wakeweb\ncd /opt/wakeweb\nnpm install' },
+        ]},
+      { title: 'Konfiguration',
+        blocks: [
+          { t: 'c', c: 'cp .env.example .env\nnano .env\n# PORT=3000' },
+        ]},
+      { title: 'Testlauf',
+        blocks: [
+          { t: 'c', c: 'npm start' },
+          { t: 'p', c: 'Im Browser <code>http://localhost:3000</code> öffnen. Mit <code>Strg+C</code> beenden.' },
+        ]},
+      { title: 'Autostart via LaunchAgent',
+        blocks: [
+          { t: 'p', c: 'Plist-Datei erstellen (Pfade ggf. anpassen):' },
+          { t: 'c', c: 'nano ~/Library/LaunchAgents/com.user.wakeweb.plist' },
+          { t: 'p', c: 'Inhalt einfügen:' },
+          { t: 'c', c: PLIST },
+          { t: 'p', c: 'LaunchAgent aktivieren:' },
+          { t: 'c', c: 'launchctl load ~/Library/LaunchAgents/com.user.wakeweb.plist' },
+        ]},
+    ],
+
+    proxmox: [
+      { title: 'LXC-Container erstellen',
+        blocks: [
+          { t: 'p', c: 'In der <strong>Proxmox Weboberfläche</strong> unter <em>Datacenter → Create CT</em>:<br><br>• Template: <strong>Debian 12 (Bookworm)</strong> – über den Download-Button aus dem Proxmox-Storage laden<br>• RAM: mind. 256 MB (512 MB empfohlen)<br>• Festplatte: 4 GB reichen<br>• Netzwerk: Bridge <code>vmbr0</code>, DHCP oder feste IP<br>• Privilegiert: Nein (unprivileged Container reicht)' },
+        ]},
+      { title: 'Container starten & einloggen',
+        blocks: [
+          { t: 'p', c: 'Container über die Proxmox-Webkonsole starten oder über den Proxmox-Host (ID z.B. 100):' },
+          { t: 'c', c: 'pct start 100\npct exec 100 -- bash' },
+          { t: 'p', c: 'Alternativ direkt über <strong>Container → Console</strong> in der Weboberfläche.' },
+        ]},
+      { title: 'System aktualisieren & Pakete installieren',
+        blocks: [
+          { t: 'c', c: 'apt update && apt upgrade -y\napt install -y git curl' },
+        ]},
+      { title: 'Node.js 20 LTS installieren',
+        blocks: [
+          { t: 'c', c: 'curl -fsSL https://deb.nodesource.com/setup_20.x | bash -\napt install -y nodejs\nnode -v && npm -v' },
+        ]},
+      { title: 'Projekt klonen & Abhängigkeiten installieren',
+        blocks: [
+          { t: 'c', c: 'git clone https://github.com/dein-user/wakeweb /opt/wakeweb\ncd /opt/wakeweb\nnpm install' },
+        ]},
+      { title: 'Konfiguration & Netzwerk',
+        blocks: [
+          { t: 'p', c: '<strong>Wichtig:</strong> Die Broadcast-Adresse des Heimnetzes muss gesetzt werden, damit WoL-Pakete das Netz erreichen.' },
+          { t: 'c', c: 'cp .env.example .env\nnano .env\n# PORT=3000\n# BROADCAST_ADDR=192.168.1.255  ← anpassen' },
+          { t: 'p', c: 'Broadcast-Adresse auf dem Proxmox-Host ermitteln:' },
+          { t: 'c', c: 'ip addr show vmbr0\n# Beispiel: inet 192.168.1.10/24 → Broadcast 192.168.1.255' },
+        ]},
+      { title: 'Als systemd-Dienst dauerhaft einrichten',
+        blocks: [
+          { t: 'c', c: 'nano /etc/systemd/system/wakeweb.service' },
+          { t: 'p', c: 'Inhalt einfügen:' },
+          { t: 'c', c: SVC },
+          { t: 'c', c: 'systemctl daemon-reload\nsystemctl enable --now wakeweb\nsystemctl status wakeweb' },
+        ]},
+    ],
+  };
+
+  const deviceGuides = {
+    windows: [
+      { title: 'WoL im BIOS / UEFI aktivieren',
+        blocks: [
+          { t: 'p', c: 'PC starten und BIOS/UEFI öffnen (<strong>F2</strong>, <strong>DEL</strong> oder <strong>F12</strong> – je nach Hersteller). Den Eintrag <em>Wake on LAN</em> oder <em>Power On By PCI-E/NIC</em> aktivieren, speichern und neu starten.' },
+        ]},
+      { title: 'Netzwerktreiber konfigurieren',
+        blocks: [
+          { t: 'p', c: '<strong>Geräte-Manager öffnen</strong> (Win+X → Geräte-Manager):<br><br>1. Netzwerkadapter → Doppelklick auf die LAN-Karte<br>2. Tab <em>Energieverwaltung</em> → alle drei Haken setzen<br>3. Tab <em>Erweitert</em> → Eigenschaft <em>Wake on Magic Packet</em> → Wert: <em>Aktiviert</em>' },
+        ]},
+      { title: 'Schnellstart deaktivieren',
+        blocks: [
+          { t: 'p', c: 'Der Windows-Schnellstart verhindert WoL, da er keinen echten Shutdown durchführt.<br><br><strong>Systemsteuerung → Energieoptionen → Netzschalterverhalten → Schnellstart aktivieren → Haken entfernen → Änderungen speichern</strong>' },
+        ]},
+      { title: 'MAC-Adresse ermitteln',
+        blocks: [
+          { t: 'c', c: 'ipconfig /all' },
+          { t: 'p', c: 'In der Ausgabe die <em>Physische Adresse</em> der gewünschten LAN-Karte notieren, z.B. <code>A1-B2-C3-D4-E5-F6</code>.' },
+        ]},
+    ],
+
+    linux: [
+      { title: 'WoL im BIOS / UEFI aktivieren',
+        blocks: [
+          { t: 'p', c: 'PC starten und BIOS/UEFI öffnen (<strong>F2</strong>, <strong>DEL</strong> oder <strong>Entf</strong>). Den Eintrag <em>Wake on LAN</em> oder <em>Wake on PCI-E</em> aktivieren, speichern und neu starten.' },
+        ]},
+      { title: 'ethtool installieren & WoL-Status prüfen',
+        blocks: [
+          { t: 'c', c: '# Debian/Ubuntu:\nsudo apt install -y ethtool\n\n# Arch/Manjaro:\nsudo pacman -S ethtool' },
+          { t: 'p', c: 'Netzwerkschnittstelle ermitteln und WoL-Status prüfen (Name ggf. anpassen):' },
+          { t: 'c', c: 'ip link show\nsudo ethtool enp3s0 | grep -i wake\n# "Wake-on: g" = WoL bereits aktiv' },
+        ]},
+      { title: 'WoL aktivieren',
+        blocks: [
+          { t: 'c', c: 'sudo ethtool -s enp3s0 wol g' },
+        ]},
+      { title: 'WoL dauerhaft aktivieren (systemd.link)',
+        blocks: [
+          { t: 'c', c: 'sudo nano /etc/systemd/network/50-wol.link' },
+          { t: 'p', c: 'Inhalt einfügen (MAC-Adresse anpassen):' },
+          { t: 'c', c: '[Match]\nMACAddress=a1:b2:c3:d4:e5:f6\n\n[Link]\nWakeOnLan=magic' },
+          { t: 'c', c: 'sudo systemctl restart systemd-networkd' },
+        ]},
+      { title: 'MAC-Adresse ermitteln',
+        blocks: [
+          { t: 'c', c: 'ip link show\n# oder:\ncat /sys/class/net/enp3s0/address' },
+        ]},
+    ],
+
+    macos: [
+      { title: 'WoL in den Systemeinstellungen aktivieren',
+        blocks: [
+          { t: 'p', c: '<strong>Systemeinstellungen → Energie sparen</strong> (macOS Ventura+: <em>Einstellungen → Batterie/Strom</em>) → <em>Netzwerkzugriff zum Reaktivieren des Computers zulassen</em> aktivieren.' },
+          { t: 'p', c: '<strong>Hinweis Apple Silicon (M1/M2/M3):</strong> Wake-on-LAN per Magic Packet wird auf Apple-Silicon-Macs nicht zuverlässig unterstützt. Bei Intel-Macs funktioniert WoL problemlos.' },
+        ]},
+      { title: 'WoL per Terminal prüfen & aktivieren',
+        blocks: [
+          { t: 'c', c: 'pmset -g | grep womp\n# womp 1 = WoL aktiv' },
+          { t: 'p', c: 'WoL per Terminal aktivieren (als Administrator):' },
+          { t: 'c', c: 'sudo pmset -a womp 1' },
+        ]},
+      { title: 'MAC-Adresse ermitteln',
+        blocks: [
+          { t: 'c', c: 'ifconfig en0 | grep ether' },
+          { t: 'p', c: 'Oder über <strong>Systemeinstellungen → Netzwerk → Details → Hardware</strong>.' },
+        ]},
+    ],
+
+    'proxmox-host': [
+      { title: 'WoL im BIOS / UEFI aktivieren',
+        blocks: [
+          { t: 'p', c: 'Server starten und BIOS/UEFI öffnen. Den Eintrag <em>Wake on LAN</em> oder <em>Wake on PCI-E</em> aktivieren, speichern und neu starten.' },
+        ]},
+      { title: 'Netzwerkschnittstelle ermitteln',
+        blocks: [
+          { t: 'c', c: 'ip link show\n# z.B. eno1, enp3s0, eth0' },
+        ]},
+      { title: 'WoL aktivieren (ethtool)',
+        blocks: [
+          { t: 'c', c: 'apt install -y ethtool\nsudo ethtool -s eno1 wol g\nsudo ethtool eno1 | grep -i wake' },
+        ]},
+      { title: 'WoL dauerhaft aktivieren',
+        blocks: [
+          { t: 'c', c: 'nano /etc/systemd/network/50-wol.link' },
+          { t: 'p', c: 'Inhalt einfügen (MAC-Adresse anpassen):' },
+          { t: 'c', c: '[Match]\nMACAddress=a1:b2:c3:d4:e5:f6\n\n[Link]\nWakeOnLan=magic' },
+          { t: 'c', c: 'systemctl restart systemd-networkd' },
+        ]},
+      { title: 'VMs beim Start automatisch hochfahren',
+        blocks: [
+          { t: 'p', c: 'In der Proxmox Weboberfläche: <strong>VM auswählen → Options → Start at boot → Yes</strong>' },
+          { t: 'p', c: 'Oder per CLI:' },
+          { t: 'c', c: 'qm set 100 --onboot 1\n# 100 = VM-ID' },
+        ]},
+      { title: 'MAC-Adresse des physischen Netzwerkanschlusses ermitteln',
+        blocks: [
+          { t: 'p', c: 'Wichtig: Die MAC-Adresse des <strong>physischen Ports</strong> verwenden, nicht die der Bridge <code>vmbr0</code>.' },
+          { t: 'c', c: 'ip link show eno1\n# oder:\ncat /sys/class/net/eno1/address' },
+        ]},
+    ],
+  };
+
+  function renderSteps(containerId, steps) {
+    document.getElementById(containerId).innerHTML = steps.map((step, i) => `
+      <div class="guide-step">
+        <div class="step-num">${i + 1}</div>
+        <div class="step-content">
+          <h3>${escHtml(step.title)}</h3>
+          ${step.blocks.map(b =>
+            b.t === 'c'
+              ? `<pre>${escHtml(b.c)}</pre>`
+              : `<p>${b.c}</p>`
+          ).join('')}
+        </div>
+      </div>`).join('');
+  }
+
+  const serverSel = document.getElementById('server-select');
+  const deviceSel = document.getElementById('device-select');
+  serverSel.addEventListener('change', () => renderSteps('server-guide', serverGuides[serverSel.value]));
+  deviceSel.addEventListener('change', () => renderSteps('device-guide', deviceGuides[deviceSel.value]));
+  renderSteps('server-guide', serverGuides[serverSel.value]);
+  renderSteps('device-guide', deviceGuides[deviceSel.value]);
+</script>
+</body>
+</html>

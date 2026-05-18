@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>wakeweb – Wake-on-LAN</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3249;
+      --accent: #5b8af5;
+      --accent-hover: #7aa3ff;
+      --danger: #e05252;
+      --danger-hover: #f07070;
+      --success: #4caf7d;
+      --text: #e8eaf6;
+      --muted: #8890b5;
+      --radius: 10px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #5b8af5, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      color: var(--muted);
+      margin-top: 0.4rem;
+      font-size: 0.95rem;
+    }
+
+    .guide-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      margin-top: 0.6rem;
+      transition: color 0.18s;
+    }
+
+    .guide-link:hover { color: var(--accent); }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1.2rem;
+    }
+
+    /* Form */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 0.75rem;
+      align-items: end;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.6rem 0.9rem;
+      border-radius: 7px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: var(--accent);
+    }
+
+    .form-group input::placeholder {
+      color: var(--muted);
+      opacity: 0.6;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1.1rem;
+      border: none;
+      border-radius: 7px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.1s;
+      white-space: nowrap;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+
+    .btn-wake {
+      background: var(--success);
+      color: #fff;
+      font-size: 0.82rem;
+      padding: 0.45rem 0.9rem;
+    }
+    .btn-wake:hover { background: #5dca93; }
+
+    .btn-delete {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid var(--danger);
+      font-size: 0.82rem;
+      padding: 0.45rem 0.9rem;
+    }
+    .btn-delete:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    /* Device List */
+    #device-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .device-item {
+      display: flex;
+      align-items: center;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.9rem 1.1rem;
+      gap: 1rem;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .device-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .device-name {
+      font-weight: 600;
+      font-size: 0.97rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .device-mac {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-family: monospace;
+      margin-top: 0.15rem;
+    }
+
+    .device-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--muted);
+      padding: 2rem;
+      font-size: 0.92rem;
+    }
+
+    /* Toast */
+    #toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      z-index: 1000;
+    }
+
+    .toast {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1.2rem;
+      font-size: 0.88rem;
+      max-width: 340px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      animation: slideIn 0.25s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .toast.success { border-left: 3px solid var(--success); }
+    .toast.error   { border-left: 3px solid var(--danger); }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 1rem 0.75rem 3rem;
+      }
+
+      header h1 {
+        font-size: 1.5rem;
+      }
+
+      .container {
+        gap: 1.25rem;
+      }
+
+      .card {
+        padding: 1.1rem;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .device-item {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      .device-info {
+        min-width: 0;
+        flex: 1 1 100%;
+      }
+
+      .device-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .device-actions .btn {
+        justify-content: center;
+      }
+
+      #toast-container {
+        left: 0.75rem;
+        right: 0.75rem;
+        bottom: 0.75rem;
+      }
+
+      .toast {
+        max-width: 100%;
+      }
+
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>wakeweb</h1>
+  <p>Wake-on-LAN im Browser – Geräte per Mausklick aufwecken</p>
+  <a href="/guide.html" class="guide-link">Einrichtungsanleitung →</a>
+</header>
+
+<div class="container">
+
+  <!-- Add Device -->
+  <div class="card">
+    <div class="card-title">Gerät hinzufügen</div>
+    <form id="add-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="input-name">Name</label>
+          <input id="input-name" type="text" placeholder="z.B. Heimserver" required />
+        </div>
+        <div class="form-group">
+          <label for="input-mac">MAC-Adresse</label>
+          <input id="input-mac" type="text" placeholder="AA:BB:CC:DD:EE:FF" required />
+        </div>
+        <button type="submit" class="btn btn-primary">+ Hinzufügen</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Device List -->
+  <div class="card">
+    <div class="card-title">Geräte</div>
+    <div id="device-list">
+      <div class="empty-state">Lade Geräte…</div>
+    </div>
+  </div>
+
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+  const list = document.getElementById('device-list');
+  const form = document.getElementById('add-form');
+
+  function toast(msg, type = 'success') {
+    const el = document.createElement('div');
+    el.className = `toast ${type}`;
+    el.textContent = msg;
+    document.getElementById('toast-container').appendChild(el);
+    setTimeout(() => el.remove(), 3500);
+  }
+
+  async function api(method, url, body) {
+    const res = await fetch(url, {
+      method,
+      headers: body ? { 'Content-Type': 'application/json' } : {},
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    return res.json();
+  }
+
+  function renderDevices(devices) {
+    if (!devices.length) {
+      list.innerHTML = '<div class="empty-state">Noch keine Geräte. Füge oben ein Gerät hinzu.</div>';
+      return;
+    }
+    list.innerHTML = '';
+    devices.forEach(d => {
+      const item = document.createElement('div');
+      item.className = 'device-item';
+      item.innerHTML = `
+        <div class="device-info">
+          <div class="device-name">${escHtml(d.name)}</div>
+          <div class="device-mac">${escHtml(d.mac)}</div>
+        </div>
+        <div class="device-actions">
+          <button class="btn btn-wake" data-id="${d.id}">Aufwecken</button>
+          <button class="btn btn-delete" data-id="${d.id}">Löschen</button>
+        </div>`;
+      list.appendChild(item);
+    });
+  }
+
+  function escHtml(str) {
+    return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  async function loadDevices() {
+    const devices = await api('GET', '/api/devices');
+    renderDevices(devices);
+  }
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = document.getElementById('input-name').value.trim();
+    const mac  = document.getElementById('input-mac').value.trim();
+    const res = await api('POST', '/api/devices', { name, mac });
+    if (res.error) { toast(res.error, 'error'); return; }
+    toast(`${res.name} hinzugefügt.`);
+    form.reset();
+    loadDevices();
+  });
+
+  list.addEventListener('click', async e => {
+    const id = e.target.dataset.id;
+    if (!id) return;
+
+    if (e.target.classList.contains('btn-wake')) {
+      e.target.disabled = true;
+      const res = await api('POST', `/api/devices/${id}/wake`);
+      e.target.disabled = false;
+      if (res.error) { toast(res.error, 'error'); return; }
+      toast(res.message);
+    }
+
+    if (e.target.classList.contains('btn-delete')) {
+      if (!confirm('Gerät wirklich löschen?')) return;
+      const res = await api('DELETE', `/api/devices/${id}`);
+      if (res.error) { toast(res.error, 'error'); return; }
+      toast('Gerät gelöscht.');
+      loadDevices();
+    }
+  });
+
+  loadDevices();
+</script>
+</body>
+</html>
