@@ -194,6 +194,34 @@
 
     .device-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
 
+    /* Status dot */
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: background 0.4s;
+    }
+
+    .status-dot.online {
+      background: var(--success);
+      box-shadow: 0 0 6px var(--success);
+    }
+
+    .status-dot.offline { background: var(--danger); }
+
+    .status-dot.unknown { background: var(--border); }
+
+    .status-dot.checking {
+      background: #c8a820;
+      animation: blink 1.4s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.35; }
+    }
+
     .empty-state {
       text-align: center;
       color: var(--muted);
@@ -394,6 +422,10 @@
             <input id="input-mac" type="text" placeholder="AA:BB:CC:DD:EE:FF" required />
           </div>
         </div>
+        <div class="form-group" style="margin-top:0.65rem">
+          <label for="input-ip">IP-Adresse <span style="font-weight:400;opacity:0.6">(optional – für Status-Anzeige)</span></label>
+          <input id="input-ip" type="text" placeholder="192.168.1.100" />
+        </div>
         <button type="submit" class="btn btn-primary form-submit">+ Hinzufügen</button>
       </form>
     </div>
@@ -451,6 +483,7 @@
       const item = document.createElement('div');
       item.className = 'device-item';
       item.innerHTML = `
+        <span class="status-dot checking" data-status-id="${d.id}" title="Prüfe…"></span>
         <div class="device-info">
           <div class="device-name">${escHtml(d.name)}</div>
           <div class="device-mac">${escHtml(d.mac)}</div>
@@ -466,13 +499,28 @@
   async function loadDevices() {
     const devices = await api('GET', '/api/devices');
     renderDevices(devices);
+    pollStatus();
   }
+
+  async function pollStatus() {
+    const statuses = await api('GET', '/api/status');
+    const labels = { online: 'Online', offline: 'Offline', unknown: 'Kein IP konfiguriert' };
+    Object.entries(statuses).forEach(([id, status]) => {
+      document.querySelectorAll(`[data-status-id="${id}"]`).forEach(dot => {
+        dot.className = `status-dot ${status}`;
+        dot.title = labels[status] ?? status;
+      });
+    });
+  }
+
+  setInterval(pollStatus, 5000);
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
     const name = document.getElementById('input-name').value.trim();
     const mac  = document.getElementById('input-mac').value.trim();
-    const res = await api('POST', '/api/devices', { name, mac });
+    const ip   = document.getElementById('input-ip').value.trim();
+    const res = await api('POST', '/api/devices', { name, mac, ip: ip || undefined });
     if (res.error) { toast(res.error, 'error'); return; }
     toast(`${res.name} hinzugefügt.`);
     form.reset();
