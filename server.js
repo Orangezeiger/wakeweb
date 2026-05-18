@@ -89,6 +89,21 @@ app.post('/api/devices/:id/wake', (req, res) => {
   });
 });
 
+// PUT /api/devices/:id
+app.put('/api/devices/:id', (req, res) => {
+  const { name, mac, ip } = req.body;
+  if (!name || !name.trim()) return res.status(400).json({ error: 'Name ist erforderlich.' });
+  if (!mac || !isValidMac(mac.trim())) return res.status(400).json({ error: 'Ungültige MAC-Adresse.' });
+  if (ip && !isValidIp(ip.trim())) return res.status(400).json({ error: 'Ungültige IP-Adresse.' });
+  const devices = readDevices();
+  const index = devices.findIndex(d => d.id === req.params.id);
+  if (index === -1) return res.status(404).json({ error: 'Gerät nicht gefunden.' });
+  devices[index] = { id: devices[index].id, name: name.trim(), mac: mac.trim() };
+  if (ip && ip.trim()) devices[index].ip = ip.trim();
+  writeDevices(devices);
+  res.json(devices[index]);
+});
+
 // GET /api/status – ping all devices
 app.get('/api/status', async (req, res) => {
   const devices = readDevices();
