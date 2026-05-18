@@ -1,61 +1,61 @@
 # wakeweb
 
-**Wake-on-LAN im Browser** – Geräte im Netzwerk per Mausklick aufwecken.
+**Wake-on-LAN in your browser** – wake up devices on your network with a single click.
 
-Modernes Web-Interface zum Verwalten und Aufwecken von Geräten per Magic Packet. Läuft als leichter Node.js-Server auf einem Heimserver, NAS oder Proxmox-LXC-Container.
+A modern web interface to manage and wake devices via Magic Packet. Runs as a lightweight Node.js server on a home server, NAS, or Proxmox LXC container.
 
 ---
 
-## Schnellstart
+## Quick Start
 
-Einen Befehl auf dem Server ausführen – der Rest passiert automatisch:
+Run a single command on your server – everything else happens automatically:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Orangezeiger/wakeweb/master/install.sh | sudo bash
 ```
 
-Der Installer:
-- installiert Node.js 20 LTS (falls nicht vorhanden)
-- klont das Repository nach `/opt/wakeweb`
-- installiert alle Abhängigkeiten
-- richtet einen systemd-Dienst ein (startet automatisch beim Boot)
-- gibt die fertige URL aus
+The installer will:
+- install Node.js 20 LTS (if not already present)
+- clone the repository to `/opt/wakeweb`
+- install all dependencies
+- set up a systemd service (starts automatically on boot)
+- print the finished URL
 
-**Unterstützte Systeme:** Debian, Ubuntu, Proxmox LXC (Debian), Arch/Manjaro
+**Supported systems:** Debian, Ubuntu, Proxmox LXC (Debian), Arch/Manjaro
 
 ---
 
-## Manueller Install
+## Manual Install
 
 ```bash
-# 1. Repository klonen
+# 1. Clone the repository
 git clone https://github.com/Orangezeiger/wakeweb /opt/wakeweb
 cd /opt/wakeweb
 
-# 2. Abhängigkeiten installieren
+# 2. Install dependencies
 npm install
 
-# 3. Konfiguration (optional)
+# 3. Configuration (optional)
 cp .env.example .env
 
-# 4. Starten
+# 4. Start
 npm start
 ```
 
-App läuft auf: **http://localhost:3000**
+App runs at: **http://localhost:3000**
 
 ---
 
-## Konfiguration
+## Configuration
 
-Datei `.env` im Projektordner:
+Edit the `.env` file in the project folder:
 
-| Variable         | Standard | Beschreibung                                              |
-|------------------|----------|-----------------------------------------------------------|
-| `PORT`           | `3000`   | Port auf dem der Server lauscht                          |
-| `BROADCAST_ADDR` | –        | Broadcast-Adresse (nötig wenn Server in LXC/VM läuft)   |
+| Variable         | Default | Description                                                  |
+|------------------|---------|--------------------------------------------------------------|
+| `PORT`           | `3000`  | Port the server listens on                                   |
+| `BROADCAST_ADDR` | –       | Broadcast address (required when server runs inside LXC/VM) |
 
-**Beispiel für Proxmox LXC:**
+**Example for Proxmox LXC:**
 ```env
 PORT=3000
 BROADCAST_ADDR=192.168.1.255
@@ -63,12 +63,11 @@ BROADCAST_ADDR=192.168.1.255
 
 ---
 
-## Als systemd-Dienst
+## systemd Service
 
-Der Installer richtet dies automatisch ein. Manuell:
+The installer sets this up automatically. To do it manually:
 
 ```bash
-# Service-Datei anlegen
 sudo nano /etc/systemd/system/wakeweb.service
 ```
 
@@ -101,33 +100,35 @@ sudo systemctl enable --now wakeweb
 curl -fsSL https://raw.githubusercontent.com/Orangezeiger/wakeweb/master/install.sh | sudo bash
 ```
 
-Der Installer erkennt eine bestehende Installation und führt nur ein `git pull` + Neustart durch.
+The installer detects an existing installation and only runs `git pull` + restart.
 
 ---
 
-## Einrichtungsanleitung
+## Setup Guide
 
-Detaillierte Schritt-für-Schritt-Anleitungen (Server-Setup, WoL am Zielgerät aktivieren) gibt es direkt in der Web-App unter **`/guide`** oder in der [Online-Anleitung](https://github.com/Orangezeiger/wakeweb/blob/master/public/guide.html).
+Detailed step-by-step instructions (server setup, enabling WoL on target devices) are available directly in the web app at `/guide`.
 
 ---
 
 ## API
 
-| Methode  | Pfad                    | Beschreibung          |
+| Method   | Path                    | Description           |
 |----------|-------------------------|-----------------------|
-| `GET`    | `/api/devices`          | Alle Geräte abrufen   |
-| `POST`   | `/api/devices`          | Gerät hinzufügen      |
-| `DELETE` | `/api/devices/:id`      | Gerät löschen         |
-| `POST`   | `/api/devices/:id/wake` | Magic Packet senden   |
+| `GET`    | `/api/devices`          | List all devices      |
+| `POST`   | `/api/devices`          | Add a device          |
+| `PUT`    | `/api/devices/:id`      | Update a device       |
+| `DELETE` | `/api/devices/:id`      | Delete a device       |
+| `POST`   | `/api/devices/:id/wake` | Send Magic Packet     |
+| `GET`    | `/api/status`           | Ping status of all devices |
 
 **POST /api/devices** – Body:
 ```json
-{ "name": "Heimserver", "mac": "AA:BB:CC:DD:EE:FF" }
+{ "name": "Home Server", "mac": "AA:BB:CC:DD:EE:FF", "ip": "192.168.1.100" }
 ```
 
 ---
 
-## Voraussetzungen
+## Prerequisites
 
-- Wake-on-LAN im BIOS/UEFI des Zielgeräts aktiviert
-- Server und Zielgerät im selben Netzwerksegment (oder `BROADCAST_ADDR` gesetzt)
+- Wake-on-LAN enabled in the BIOS/UEFI of the target device
+- Server and target device on the same network segment (or `BROADCAST_ADDR` configured)
