@@ -129,6 +129,5 @@ Detaillierte Schritt-für-Schritt-Anleitungen (Server-Setup, WoL am Zielgerät a
 
 ## Voraussetzungen
 
-- Node.js ≥ 18
 - Wake-on-LAN im BIOS/UEFI des Zielgeräts aktiviert
 - Server und Zielgerät im selben Netzwerksegment (oder `BROADCAST_ADDR` gesetzt)
