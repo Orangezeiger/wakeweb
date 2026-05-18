@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -144,18 +144,16 @@
     .btn-wake:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .btn-edit {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
       background: transparent;
       border: none;
       color: var(--muted);
-      padding: 0.25rem;
+      padding: 0.3rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       border-radius: 5px;
       transition: color 0.15s;
+      flex-shrink: 0;
     }
     .btn-edit:hover { color: var(--text); }
 
@@ -183,7 +181,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 0.9rem 1.1rem;
-      gap: 1rem;
+      gap: 0.75rem;
       animation: fadeIn 0.25s ease;
     }
 
@@ -226,7 +224,6 @@
     }
 
     .status-dot.offline { background: var(--danger); }
-
     .status-dot.unknown { background: var(--border); }
 
     .status-dot.checking {
@@ -338,11 +335,8 @@
     }
     .modal-close:hover { color: var(--text); background: var(--surface2); }
 
-    .modal-body {
-      padding: 1.4rem;
-    }
+    .modal-body { padding: 1.4rem; }
 
-    /* Form inside modal */
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -388,6 +382,12 @@
       .device-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
       .device-actions .btn { justify-content: center; }
 
+      .btn-edit {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+      }
+
       .form-row { grid-template-columns: 1fr; }
 
       #toast-container { left: 0.75rem; right: 0.75rem; bottom: 0.75rem; }
@@ -399,21 +399,21 @@
 
 <header>
   <h1>wakeweb</h1>
-  <p>Wake-on-LAN im Browser – Geräte per Mausklick aufwecken</p>
-  <a href="/guide.html" class="guide-link">Einrichtungsanleitung →</a>
+  <p>Wake-on-LAN in your browser – wake devices with a single click</p>
+  <a href="/guide.html" class="guide-link">Setup Guide →</a>
 </header>
 
 <div class="container">
   <div class="card">
     <div class="card-header">
-      <div class="card-title">Geräte</div>
+      <div class="card-title">Devices</div>
       <button class="btn-icon" id="open-modal">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Hinzufügen
+        Add
       </button>
     </div>
     <div id="device-list">
-      <div class="empty-state">Lade Geräte…</div>
+      <div class="empty-state">Loading devices…</div>
     </div>
   </div>
 </div>
@@ -422,8 +422,8 @@
 <div class="modal-backdrop" id="modal-backdrop">
   <div class="modal" role="dialog" aria-modal="true">
     <div class="modal-header">
-      <span class="modal-title">Gerät hinzufügen</span>
-      <button class="modal-close" id="close-modal" aria-label="Schließen">
+      <span class="modal-title">Add Device</span>
+      <button class="modal-close" id="close-modal" aria-label="Close">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
@@ -432,18 +432,18 @@
         <div class="form-row">
           <div class="form-group">
             <label for="input-name">Name</label>
-            <input id="input-name" type="text" placeholder="z.B. Heimserver" required />
+            <input id="input-name" type="text" placeholder="e.g. Home Server" required />
           </div>
           <div class="form-group">
-            <label for="input-mac">MAC-Adresse</label>
+            <label for="input-mac">MAC Address</label>
             <input id="input-mac" type="text" placeholder="AA:BB:CC:DD:EE:FF" required />
           </div>
         </div>
         <div class="form-group" style="margin-top:0.65rem">
-          <label for="input-ip">IP-Adresse <span style="font-weight:400;opacity:0.6">(optional – für Status-Anzeige)</span></label>
+          <label for="input-ip">IP Address <span style="font-weight:400;opacity:0.6">(optional – for status display)</span></label>
           <input id="input-ip" type="text" placeholder="192.168.1.100" />
         </div>
-        <button type="submit" class="btn btn-primary form-submit">+ Hinzufügen</button>
+        <button type="submit" class="btn btn-primary form-submit">+ Add</button>
       </form>
     </div>
   </div>
@@ -453,8 +453,8 @@
 <div class="modal-backdrop" id="edit-backdrop">
   <div class="modal" role="dialog" aria-modal="true">
     <div class="modal-header">
-      <span class="modal-title">Gerät bearbeiten</span>
-      <button class="modal-close" id="close-edit-modal" aria-label="Schließen">
+      <span class="modal-title">Edit Device</span>
+      <button class="modal-close" id="close-edit-modal" aria-label="Close">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
@@ -467,15 +467,15 @@
             <input id="edit-name" type="text" required />
           </div>
           <div class="form-group">
-            <label for="edit-mac">MAC-Adresse</label>
+            <label for="edit-mac">MAC Address</label>
             <input id="edit-mac" type="text" required />
           </div>
         </div>
         <div class="form-group" style="margin-top:0.65rem">
-          <label for="edit-ip">IP-Adresse <span style="font-weight:400;opacity:0.6">(optional – für Status-Anzeige)</span></label>
+          <label for="edit-ip">IP Address <span style="font-weight:400;opacity:0.6">(optional – for status display)</span></label>
           <input id="edit-ip" type="text" placeholder="192.168.1.100" />
         </div>
-        <button type="submit" class="btn btn-primary form-submit">Speichern</button>
+        <button type="submit" class="btn btn-primary form-submit">Save</button>
       </form>
     </div>
   </div>
@@ -507,7 +507,7 @@
   function closeModal() { backdrop.classList.remove('open'); }
 
   function openEditModal(device) {
-    document.getElementById('edit-id').value  = device.id;
+    document.getElementById('edit-id').value   = device.id;
     document.getElementById('edit-name').value = device.name;
     document.getElementById('edit-mac').value  = device.mac;
     document.getElementById('edit-ip').value   = device.ip || '';
@@ -540,7 +540,7 @@
 
   function renderDevices(devices) {
     if (!devices.length) {
-      list.innerHTML = '<div class="empty-state">Noch keine Geräte. Klicke auf „Hinzufügen".</div>';
+      list.innerHTML = '<div class="empty-state">No devices yet. Click "Add" to get started.</div>';
       return;
     }
     list.innerHTML = '';
@@ -548,16 +548,16 @@
       const item = document.createElement('div');
       item.className = 'device-item';
       item.innerHTML = `
-        <span class="status-dot checking" data-status-id="${d.id}" title="Prüfe…"></span>
+        <span class="status-dot checking" data-status-id="${d.id}" title="Checking…"></span>
         <div class="device-info">
           <div class="device-name">${escHtml(d.name)}</div>
           <div class="device-mac">${escHtml(d.mac)}</div>
         </div>
         <div class="device-actions">
           <button class="btn btn-wake" data-id="${d.id}"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="pointer-events:none"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start</button>
-          <button class="btn btn-delete" data-id="${d.id}"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg> Löschen</button>
+          <button class="btn btn-delete" data-id="${d.id}"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg> Delete</button>
         </div>
-        <button class="btn-edit" data-id="${d.id}" data-action="edit" title="Bearbeiten"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>`;
+        <button class="btn-edit" data-id="${d.id}" data-action="edit" title="Edit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>`;
       list.appendChild(item);
     });
   }
@@ -568,7 +568,7 @@
     pollStatus();
   }
 
-  const STATUS_LABELS = { online: 'Online', offline: 'Offline', unknown: 'Kein IP konfiguriert' };
+  const STATUS_LABELS = { online: 'Online', offline: 'Offline', unknown: 'No IP configured' };
 
   function applyStatus(id, status) {
     document.querySelectorAll(`[data-status-id="${id}"]`).forEach(dot => {
@@ -584,7 +584,7 @@
     } catch {
       document.querySelectorAll('.status-dot').forEach(dot => {
         dot.className = 'status-dot unknown';
-        dot.title = 'Nicht erreichbar';
+        dot.title = 'Unreachable';
       });
       return;
     }
@@ -601,7 +601,7 @@
     const ip   = document.getElementById('input-ip').value.trim();
     const res = await api('POST', '/api/devices', { name, mac, ip: ip || undefined });
     if (res.error) { toast(res.error, 'error'); return; }
-    toast(`${res.name} hinzugefügt.`);
+    toast(`${res.name} added.`);
     form.reset();
     closeModal();
     loadDevices();
@@ -609,13 +609,13 @@
 
   document.getElementById('edit-form').addEventListener('submit', async e => {
     e.preventDefault();
-    const id  = document.getElementById('edit-id').value;
+    const id   = document.getElementById('edit-id').value;
     const name = document.getElementById('edit-name').value.trim();
     const mac  = document.getElementById('edit-mac').value.trim();
     const ip   = document.getElementById('edit-ip').value.trim();
     const res = await api('PUT', `/api/devices/${id}`, { name, mac, ip: ip || undefined });
     if (res.error) { toast(res.error, 'error'); return; }
-    toast(`${res.name} gespeichert.`);
+    toast(`${res.name} saved.`);
     closeEditModal();
     loadDevices();
   });
@@ -641,10 +641,10 @@
     }
 
     if (btn.classList.contains('btn-delete')) {
-      if (!confirm('Gerät wirklich löschen?')) return;
+      if (!confirm('Delete this device?')) return;
       const res = await api('DELETE', `/api/devices/${id}`);
       if (res.error) { toast(res.error, 'error'); return; }
-      toast('Gerät gelöscht.');
+      toast('Device deleted.');
       loadDevices();
     }
   });
